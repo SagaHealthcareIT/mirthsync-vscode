@@ -7,6 +7,11 @@ Versions with an odd minor number (e.g. `0.1.x`) are published to the Marketplac
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-05-20
+
+Stable release. No functional changes from `0.3.1`; promoted to the
+Marketplace stable channel after field-test.
+
 ## [0.3.1] - 2026-05-20
 
 Pre-release. Fixes the 0.3.0 Marketplace listing so it renders against
