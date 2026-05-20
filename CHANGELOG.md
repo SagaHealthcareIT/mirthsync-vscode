@@ -7,17 +7,57 @@ Versions with an odd minor number (e.g. `0.1.x`) are published to the Marketplac
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-05-20
+
+Pre-release. Fixes the 0.3.0 Marketplace listing so it renders against
+a dedicated public companion repo instead of the unrelated mirthsync
+CLI repo, wires release-time mirroring of user-facing files into that
+companion repo, and adds opt-in orphan deletion for `Pull All`.
+
+### Added
+
+- **Orphan deletion on `Pull All`** (opt-in). New settings
+  `mirthsync.deleteOrphaned` (boolean, default `false`) and
+  `mirthsync.promptForDeleteOrphaned` (boolean, default `true`) wire the
+  underlying mirthsync CLI's `--delete-orphaned` flag through to the
+  extension. When the setting is on and the prompt is on (default), a
+  modal at the start of `Pull All` asks whether to proceed with delete,
+  proceed without delete, or cancel. When the prompt is suppressed,
+  orphans are deleted silently — for unattended workflows. Scoped
+  pulls (single channel / channel group / code template library) are
+  intentionally unaffected: orphan detection requires a global view of
+  what exists on the server. Both settings are in
+  `restrictedConfigurations` so a workspace's `.vscode/settings.json`
+  cannot silently enable the destructive path. The
+  `mirthsync.pullComplete` telemetry event grows a `deleteOrphaned`
+  boolean (always set on pull events — `true` only when the user opted
+  in via setting + confirmation; scoped pulls always emit `false`) so
+  we can see opt-in rates.
+
 ### Fixed
 
-- Marketplace listing no longer resolves to the unrelated public
-  `mirthsync` CLI repo. Dropped the relative `./infra/telemetry/`,
-  `./doc/PLAN-TELEMETRY.md`, and `./LICENSE` links from the README
-  (they 404'd or showed the wrong, Eclipse-licensed file); removed
-  the `repository` field from `package.json` (the extension source is
-  in a private repo, so a public repo URL would have been misleading);
-  pointed `bugs.url` at `https://saga-it.com/products/mirthsync-vscode#support`
-  so "Report a problem" reaches the right team instead of the CLI
-  maintainers.
+- Marketplace listing now resolves correctly against a dedicated public
+  companion repo (`SagaHealthcareIT/mirthsync-vscode`) rather than the
+  unrelated public `mirthsync` CLI repo. The 0.3.0 listing's relative
+  links (`./infra/telemetry/`, `./doc/PLAN-TELEMETRY.md`, `./LICENSE`)
+  resolved to the CLI repo and either 404'd or rendered the wrong
+  (Eclipse-licensed) `LICENSE`; the README screen-recording GIFs lived
+  under that CLI repo too. The README now inlines the proprietary
+  license clause directly, `repository` points at the companion repo so
+  Marketplace's sidebar link is meaningful, `bugs.url` points at the
+  companion's `/issues` so "Report a problem" reaches a real triage
+  queue, and the README's GIFs are served from the companion repo's
+  `media/`.
+
+### Infrastructure
+
+- Release workflow mirrors `README.md`, `CHANGELOG.md`, and `LICENSE`
+  into the public companion repo on tag push, so the Marketplace
+  listing's resources stay in sync without manual copy-paste between
+  the private source repo and the public-facing one. Authenticates
+  with a dedicated ed25519 deploy key on the companion repo
+  (`COMPANION_DEPLOY_KEY` secret) — scoped, no expiry, no user
+  attribution.
 
 ## [0.3.0] - 2026-05-14
 

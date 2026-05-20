@@ -99,6 +99,8 @@ Mirth Connect and Open Integration Engine development in VS Code — channel syn
 | `mirthsync.javadocsUrl` | string | `""` | URL to Mirth javadocs for API generation. |
 | `mirthsync.forceSync` | boolean | `false` | Force overwrite when syncing channels/templates. |
 | `mirthsync.promptForForce` | boolean | `true` | Prompt to use force option when sync fails due to conflicts. |
+| `mirthsync.deleteOrphaned` | boolean | `false` | When pulling, delete local files that no longer exist on the server. **Destructive — opt-in.** Only applies to `Pull All`; scoped pulls (single channel/group/library) are unaffected. |
+| `mirthsync.promptForDeleteOrphaned` | boolean | `true` | When `deleteOrphaned` is enabled, show a confirmation prompt at the start of each `Pull All`. Disable for unattended automation. |
 | `mirthsync.includeConfigurationMap` | boolean | `false` | Include the Configuration Map when pulling or pushing. |
 | `mirthsync.deployAfterPush` | boolean | `false` | Deploy channels immediately after pushing. |
 | `mirthsync.skipDisabled` | boolean | `false` | Skip disabled channels when pushing. |
