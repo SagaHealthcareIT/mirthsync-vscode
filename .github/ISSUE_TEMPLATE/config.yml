@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/SagaHealthcareIT/mirthsync-vscode/security/policy
+    about: Please report security issues privately via email — do not file a public issue.
+  - name: mirthsync CLI (Clojure)
+    url: https://github.com/SagaHealthcareIT/mirthsync/issues
+    about: Issues with the underlying mirthsync command-line tool, not the VS Code extension.
