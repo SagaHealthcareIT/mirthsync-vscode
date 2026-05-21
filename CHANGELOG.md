@@ -7,6 +7,21 @@ Versions with an odd minor number (e.g. `0.1.x`) are published to the Marketplac
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-05-21
+
+Stable patch. Documentation-only: trims the Marketplace listing's
+**Telemetry** section to a short summary and moves the full
+collected / never-collected lists and inspect-the-output-channel
+walkthrough into a new `TELEMETRY.md` linked from the README. No
+runtime changes — what we collect and how to opt out are unchanged.
+
+### Changed
+
+- **README Telemetry section** shortened from ~70 lines to a ~12-line
+  summary plus a link to `TELEMETRY.md`. The full content is now in
+  `TELEMETRY.md`, mirrored into the companion repo by the release
+  workflow alongside `README.md`, `CHANGELOG.md`, and `LICENSE`.
+
 ## [0.4.0] - 2026-05-20
 
 Stable release. No functional changes from `0.3.1`; promoted to the

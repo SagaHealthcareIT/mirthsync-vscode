@@ -200,76 +200,21 @@ Alternatively, download from [GitHub releases](https://github.com/SagaHealthcare
 
 ## Telemetry
 
-This extension sends a small amount of **anonymous** usage data to help us
-decide what to build next. The data shapes our roadmap; without it we are
-guessing at which commands matter and which can be retired.
+This extension sends a small amount of anonymous usage data — command
+IDs and durations, success/failure outcomes, numeric error codes,
+non-default-setting booleans, and VS Code's standard environment
+identifiers. We **never** send channel/template/script content, server
+URLs, usernames, credentials, file paths, or subprocess output.
 
-### What we collect
+**Opt out** with either:
 
-- Which commands you run (the command ID — e.g. `mirthsync.pull` — and how
-  long it took to complete).
-- High-level outcomes of MirthSync pull/push and git operations: success
-  or failure, duration. **Never** the channel, template, or script names
-  being operated on.
-- Connection counts (bucketed: 1, 2-3, 4-10, 10+) and whether each
-  connection points at localhost vs. a remote host. Never the URL.
-- Local Mirth lifecycle events (init, start, stop, reset, status) and a
-  boolean for whether Docker is available.
-- Error codes from our internal error classification (numeric codes only,
-  e.g. `1001`, `4004`, mapped to categories like `Connection`, `API`).
-- Which non-default settings you have enabled — as booleans. For path /
-  URL / image-tag settings, only the boolean "has the user overridden the
-  default?" is sent, never the value.
-- VS Code's automatically-attached identifiers: OS, OS version, VS Code
-  version, extension version, anonymised machine ID, session ID, UI kind
-  (desktop / web), remote name (none / WSL / SSH / dev-container).
+- `telemetry.telemetryLevel` = `off` (VS Code-wide), or
+- `mirthsync.telemetry.enabled` = `false` (this extension only).
 
-### What we will never collect
-
-- **Channel names or content** (transformer scripts, filter scripts,
-  connector configuration, deployment scripts).
-- **Code template names or content.**
-- **Global script content.**
-- **ConfigurationMap content.**
-- **Server URLs, hostnames, or ports.** We derive a boolean `isLocalhost`
-  from the host; the URL itself never leaves your machine.
-- **Usernames** (Mirth or OS).
-- **Passwords, tokens, keys, certificates.**
-- **File paths** of any kind. Workspace paths, mirthsync paths, custom
-  keystore paths, none of these.
-- **Workspace folder names** or git remote URLs.
-- **stdout / stderr** from any subprocess (`mirthsync`, `docker compose`,
-  `oiecommand`).
-- **Free-form text** you type into any input box (connection names,
-  commit messages, etc.).
-- **Anything from the workspace filesystem** beyond the booleans listed
-  above.
-
-### How to opt out
-
-Two switches; either one is enough to stop all sending:
-
-- **VS Code-wide:** set `telemetry.telemetryLevel` to `off`. This affects
-  every extension, not just this one. Recommended if you don't want any
-  extension reporting telemetry.
-- **Just this extension:** set `mirthsync.telemetry.enabled` to `false`.
-
-When telemetry is off, the extension logs a one-line confirmation to the
-**MirthSync Telemetry** output channel on activation so you can verify it
-took effect.
-
-### How to inspect what's being sent
-
-Set `mirthsync.telemetry.showOutput` to `true` (or run **MirthSync: Show
-Telemetry Output**) and every event we send — including the full property
-bag — is logged to the **MirthSync Telemetry** output channel as it goes
-out. You can flip this on at any time to audit exactly what's being
-collected.
-
-### Where the data goes
-
-Azure Application Insights, in a resource group owned by Saga IT, LLC.
-Retention: 90 days.
+Data lands in Azure Application Insights (Saga IT, LLC), 90-day
+retention. See [TELEMETRY.md](./TELEMETRY.md) for the full collected /
+never-collected lists and how to audit events live via the **MirthSync
+Telemetry** output channel.
 
 ## Related Projects
 
