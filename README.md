@@ -104,7 +104,7 @@ Mirth Connect and Open Integration Engine development in VS Code — channel syn
 | `mirthsync.includeConfigurationMap` | boolean | `false` | Include the Configuration Map when pulling or pushing. |
 | `mirthsync.deployAfterPush` | boolean | `false` | Deploy channels immediately after pushing. |
 | `mirthsync.skipDisabled` | boolean | `false` | Skip disabled channels when pushing. |
-| `mirthsync.localMirth.mirthImageTag` | string | `"4.5.2-alpine-jre"` | Image tag for the Local Mirth server (`sagait/engine` — Saga-packaged Open Integration Engine). |
+| `mirthsync.localMirth.mirthImageTag` | string | `"4.5.2-ubuntu-jre"` | Image tag for the Local Mirth server (`sagait/engine` — Saga-packaged Open Integration Engine). |
 | `mirthsync.localMirth.mirthsyncVersion` | string | `"3.5.2"` | mirthsync release version baked into the Local Mirth tools image. |
 | `mirthsync.localMirth.additionalPorts` | array | `[]` | Additional ports to forward from the Mirth container to localhost (e.g., MLLP/HTTP listener ports). The extension writes these to an auto-managed `docker-compose.override.yml` on Start. |
 

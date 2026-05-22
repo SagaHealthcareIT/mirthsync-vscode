@@ -7,6 +7,39 @@ Versions with an odd minor number (e.g. `0.1.x`) are published to the Marketplac
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-05-22
+
+Stable patch. Changes the default Local Mirth image from
+`sagait/engine:4.5.2-alpine-jre` (musl libc) to
+`sagait/engine:4.5.2-ubuntu-jre` (glibc). Same Mirth version, same
+plugins, same `oiecommand`; just a glibc base, which matches what
+Mirth's official Linux installer targets and avoids known musl edge
+cases around JNI / native libraries used by JDBC drivers, TLS, and
+ICU.
+
+### Changed
+
+- **Default `mirthsync.localMirth.mirthImageTag`** is now
+  `4.5.2-ubuntu-jre` (was `4.5.2-alpine-jre`). The scaffolded
+  `compose.yml` template, settings-snapshot telemetry default, and
+  scaffold README are updated accordingly.
+
+### Migration impact (existing Local Mirth workspaces)
+
+On the first **MirthSync: Start Local Mirth** after upgrading, users
+who never customized `mirthsync.localMirth.mirthImageTag` will see:
+
+1. A ~340 MB image pull (`sagait/engine:4.5.2-ubuntu-jre`).
+2. The `mirthsync-local-mirth` container is recreated against the
+   new image.
+3. **Data is preserved.** Mirth appdata, custom extensions, and
+   Postgres data live in named volumes (`mirth-appdata`,
+   `mirth-custom-extensions`, `postgres-data`) and are not touched.
+   Channels, code templates, and DB content carry over.
+
+Users who explicitly pinned `mirthsync.localMirth.mirthImageTag`
+keep their pinned value with no change.
+
 ## [0.4.1] - 2026-05-21
 
 Stable patch. Documentation-only: trims the Marketplace listing's
