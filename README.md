@@ -1,24 +1,38 @@
 # MirthSync for VS Code
 
-Mirth Connect and Open Integration Engine development in VS Code — channel sync, IntelliSense for Mirth scripting APIs, multi-server connection management, and a one-command local Mirth Docker stack for offline testing.
+**Mirth Connect & Open Integration Engine development in VS Code.** Channel sync, IntelliSense for Mirth scripting APIs, multi-server connection management, and a one-command Local Mirth Docker stack for offline testing — no Java install, no admin rights.
 
-**By [Saga IT, LLC](https://saga-it.com)**
+[![Version](https://img.shields.io/visual-studio-marketplace/v/SagaITLLC.mirthsync?label=marketplace)](https://marketplace.visualstudio.com/items?itemName=SagaITLLC.mirthsync)
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/SagaITLLC.mirthsync)](https://marketplace.visualstudio.com/items?itemName=SagaITLLC.mirthsync)
+[![Rating](https://img.shields.io/visual-studio-marketplace/r/SagaITLLC.mirthsync)](https://marketplace.visualstudio.com/items?itemName=SagaITLLC.mirthsync)
 
-> **Note:** This is a community extension developed by Saga IT, LLC. It is not affiliated with or endorsed by NextGen Healthcare.
+**By [Saga IT, LLC](https://saga-it.com)** · [Docs](https://saga-it.com/docs/mirthsync/vscode/) · [Mirth Connect Docker Quickstart](https://saga-it.com/blog/mirth-connect-quickstart)
+
+## What's new in v2
+
+- 🐳 **Local Mirth** — `MirthSync: Initialize Local Mirth` scaffolds a Docker Compose stack (Mirth + Postgres + tools) into your workspace and auto-wires a connection. Install Mirth Connect in Docker without touching your host. → [Quickstart](https://saga-it.com/blog/mirth-connect-quickstart)
+- ⚙️ **Auto port fallback** — Local Mirth handles port-8443 conflicts and persists the choice in `.env`.
+- 🔄 **`deleteOrphaned` setting** — opt-in destructive `Pull All` for full-mirror workflows.
 
 ## Features
 
-- **Channel & Template Sync** - Pull/push individual channels, channel groups, code template libraries, or sync all at once
-- **Connection Management** - Multi-server connection profiles with secure credential storage (VS Code Secrets API)
-- **IntelliSense** - Autocomplete and hover documentation for Mirth JavaScript APIs
+- 🐳 **Local Mirth** — One command spins up Mirth Connect or OIE in Docker (Mirth + Postgres + tools). Nothing on your host beyond Docker. [Mirth Connect Docker quickstart →](https://saga-it.com/blog/mirth-connect-quickstart)
+
+  ![Local Mirth](https://raw.githubusercontent.com/SagaHealthcareIT/mirthsync-vscode/refs/heads/main/media/local-mirth.gif)
+- **Channel & Template Sync** — Pull/push individual channels, channel groups, code template libraries, or sync all at once
+- **Connection Management** — Multi-server connection profiles with secure credential storage (VS Code Secrets API)
+- **IntelliSense** — Autocomplete and hover documentation for Mirth JavaScript APIs
 
   ![IntelliSense](https://raw.githubusercontent.com/SagaHealthcareIT/mirthsync-vscode/refs/heads/main/media/intellisense.gif)
-- **Status Bar Controls** - Quick toggles for ConfigMap inclusion, Force sync, and Deploy after push
-- **File Explorer Integration** - Right-click on Channels/CodeTemplates folders to pull/push directly
-- **Tree Views** - Browse channels and code templates hierarchically with context menu actions
-- **Local Mirth** - One-command Docker Compose stack with Open Integration Engine + Postgres, for testing this workspace against a throwaway local Mirth
+- **Status Bar Controls** — Quick toggles for ConfigMap inclusion, Force sync, and Deploy after push
+- **File Explorer Integration** — Right-click on Channels/CodeTemplates folders to pull/push directly
+- **Tree Views** — Browse channels and code templates hierarchically with context menu actions
 
 ## Quick Start
+
+Two paths depending on whether you already have a Mirth server:
+
+### Path A — You have a Mirth Connect server
 
 1. Install the extension from the VS Code marketplace (or from VSIX)
 2. Open Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
@@ -27,6 +41,14 @@ Mirth Connect and Open Integration Engine development in VS Code — channel syn
 5. Use tree views or commands to pull/push channels
 
 ![Add Connection](https://raw.githubusercontent.com/SagaHealthcareIT/mirthsync-vscode/refs/heads/main/media/add-connection.gif)
+
+### Path B — Zero install: Local Mirth in Docker
+
+1. Install the extension
+2. Run **`MirthSync: Initialize Local Mirth`** in any workspace
+3. Run **`MirthSync: Start Local Mirth`** — the auto-created *Local Mirth* connection is ready in ~30 seconds
+
+Full walkthrough: [How to Install Mirth Connect, OIE, or BridgeLink (2026 Docker Quickstart)](https://saga-it.com/blog/mirth-connect-quickstart).
 
 ## Commands
 
@@ -85,6 +107,8 @@ Mirth Connect and Open Integration Engine development in VS Code — channel syn
 | `MirthSync: Show Local Mirth Status` | Per-service running/health summary |
 | `MirthSync: Show Local Mirth Logs` | Tail Mirth container logs into the MirthSync output channel |
 | `MirthSync: Show Local Mirth Info` | URL, credentials, files location, launcher links — with copy actions |
+
+Full reference: [Local Mirth docs on saga-it.com →](https://saga-it.com/docs/mirthsync/vscode/local-mirth/)
 
 ## Settings
 
@@ -152,9 +176,9 @@ The status bar shows:
 
 ![Status Bar Controls](https://raw.githubusercontent.com/SagaHealthcareIT/mirthsync-vscode/refs/heads/main/media/status-bar-controls.gif)
 
-## Local Mirth
+## Local Mirth — Mirth Connect in Docker, zero host install
 
-For testing this workspace against a throwaway local Mirth without installing anything on the host beyond Docker, run **`MirthSync: Initialize Local Mirth`**. It scaffolds `.mirthsync/local/` with a compose stack:
+For testing this workspace against a throwaway local Mirth Connect server without installing Java or the Mirth installer on your host, run **`MirthSync: Initialize Local Mirth`**. It scaffolds `.mirthsync/local/` with a Docker Compose stack:
 
 - `mirth` — Saga-packaged Open Integration Engine (`sagait/engine`, OIE with Saga plugins preinstalled), exposed on `127.0.0.1:8443` (or an auto-chosen fallback if 8443 is busy)
 - `postgres` — Mirth's backing database, on a named volume
@@ -172,6 +196,8 @@ To open the Mirth Administrator against the local server, install a launcher on 
 - **[NextGen MCAL](https://github.com/nextgenhealthcare/connect/releases)** — legacy NextGen Mirth Connect Administrator Launcher. Bundles its own JRE.
 
 Default credentials are `admin` / `admin`; the Administrator will prompt you to change the password on first login.
+
+**Full guide:** [How to install Mirth Connect, OIE, or BridgeLink with Docker (2026 quickstart)](https://saga-it.com/blog/mirth-connect-quickstart) · [Local Mirth docs](https://saga-it.com/docs/mirthsync/vscode/local-mirth/)
 
 ## Requirements
 
@@ -220,6 +246,10 @@ Telemetry** output channel.
 
 - [mirthsync](https://github.com/SagaHealthcareIT/mirthsync) - CLI tool for syncing Mirth configurations
 - [Open Integration Engine (OIE)](https://github.com/OpenIntegrationEngine/engine) - Open source integration engine
+
+## About
+
+This is a community extension developed by [Saga IT, LLC](https://saga-it.com). It is **not affiliated with or endorsed by NextGen Healthcare**.
 
 ## License
 
