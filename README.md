@@ -2,9 +2,9 @@
 
 Mirth Connect and Open Integration Engine development in VS Code — channel sync, IntelliSense for Mirth scripting APIs, multi-server connection management, and a one-command local Mirth Docker stack for offline testing.
 
-**By [Saga IT, LLC](https://saga-it.com)**
+**By [Saga IT, LLC](https://saga-it.com)** — full details on the [MirthSync for VS Code product page](https://saga-it.com/products/mirthsync-vscode).
 
-> **Note:** This is a community extension developed by Saga IT, LLC. It is not affiliated with or endorsed by NextGen Healthcare.
+> **Note:** This is a community extension developed by Saga IT, LLC. It is not affiliated with or endorsed by NextGen Healthcare. Mirth and Mirth Connect are trademarks of NextGen Healthcare.
 
 ## Features
 
@@ -173,20 +173,24 @@ To open the Mirth Administrator against the local server, install a launcher on 
 
 Default credentials are `admin` / `admin`; the Administrator will prompt you to change the password on first login.
 
+> Prefer a standalone engine outside VS Code? Saga's [five-minute Docker quickstart](https://saga-it.com/blog/mirth-connect-quickstart) walks through running Mirth/OIE locally.
+
 ## Requirements
 
 - VS Code 1.85.0 or higher
 - [mirthsync](https://github.com/SagaHealthcareIT/mirthsync) CLI tool (for sync operations against non-local Mirth servers)
-- Mirth Connect 4.5.2+ or [Open Integration Engine (OIE)](https://github.com/OpenIntegrationEngine/engine)
+- Open-source Mirth Connect (4.5.2, the last open-source release), [Open Integration Engine (OIE)](https://github.com/OpenIntegrationEngine/engine), or BridgeLink
 - Docker (only required for the Local Mirth feature)
 
 ### Compatibility
 
-This extension works with:
-- **Mirth Connect** - The commercial integration engine by NextGen Healthcare
-- **Open Integration Engine (OIE)** - The open source community edition (formerly Mirth Connect Open Source)
+MirthSync talks to the standard Mirth Connect REST API, so it works with the **open-source lineage** of the engine — not the closed-source commercial product:
 
-Both use the same underlying API, so MirthSync works seamlessly with either.
+- **Mirth® Connect (open source)** — the open-source releases through **4.5.2**, the last open-source version
+- **[Open Integration Engine (OIE)](https://saga-it.com/services/open-integration-engine)** — the community fork of that last open-source release
+- **BridgeLink** — a community distribution built on the same lineage
+
+It does **not** target the closed-source commercial version (NextGen Connect 4.6 and later). Not sure which engine is right for you? See [OIE vs BridgeLink vs Mirth Connect](https://saga-it.com/blog/oie-vs-bridgelink-vs-mirth-connect).
 
 ### Installing mirthsync
 
@@ -196,7 +200,7 @@ The preferred method is via npm:
 npm install -g @saga-it/mirthsync
 ```
 
-Alternatively, download from [GitHub releases](https://github.com/SagaHealthcareIT/mirthsync/releases).
+Alternatively, download from [GitHub releases](https://github.com/SagaHealthcareIT/mirthsync/releases). New to the CLI? Start with [getting started with mirthsync](https://saga-it.com/blog/getting-started-with-mirthsync).
 
 ## Telemetry
 
@@ -220,6 +224,14 @@ Telemetry** output channel.
 
 - [mirthsync](https://github.com/SagaHealthcareIT/mirthsync) - CLI tool for syncing Mirth configurations
 - [Open Integration Engine (OIE)](https://github.com/OpenIntegrationEngine/engine) - Open source integration engine
+
+## Resources from Saga IT
+
+Saga IT builds and maintains MirthSync, and provides Mirth Connect & OIE integration consulting:
+
+- [Mirth Connect consulting & development](https://saga-it.com/services/mirth-connect)
+- [Healthcare integration-engine services](https://saga-it.com/services/healthcare-integration-engines)
+- [Why we publish to two marketplaces (VS Code + Open VSX)](https://saga-it.com/blog/mirth-connect-vs-code-cursor)
 
 ## License
 
