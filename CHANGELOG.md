@@ -7,6 +7,25 @@ Versions with an odd minor number (e.g. `0.1.x`) are published to the Marketplac
 
 ## [Unreleased]
 
+## [0.4.3] - 2026-06-08
+
+Stable patch. Documentation only — no code or behavior changes.
+Corrects the README's Mirth Connect compatibility description, which
+backwards-labeled Mirth Connect as the commercial NextGen product.
+This is the README baked into the Marketplace and Open VSX listings.
+
+### Changed
+
+- **Compatibility section** now describes the open-source lineage the
+  extension actually targets — open-source Mirth® Connect (through
+  4.5.2, the last open-source release), Open Integration Engine (OIE),
+  and BridgeLink — and clarifies it does **not** target the
+  closed-source commercial version (NextGen Connect 4.6+).
+- **Requirements** wording corrected from "Mirth Connect 4.5.2+" to
+  name the open-source lineage explicitly.
+- Added a Mirth trademark note to the non-affiliation disclaimer and
+  contextual links to saga-it.com resources.
+
 ## [0.4.2] - 2026-05-22
 
 Stable patch. Changes the default Local Mirth image from
