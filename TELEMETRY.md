@@ -33,6 +33,12 @@ small.
   Code version, extension version, anonymised machine ID, session ID,
   UI kind (desktop / web), remote name (none / WSL / SSH /
   dev-container).
+- The distribution channel the build came from — `marketplace` or
+  `openvsx` — baked into the build so we can tell which registry our
+  installs come from. This is build metadata, not anything about you.
+- The host editor's URI scheme — e.g. `vscode`, `cursor`, `vscodium`,
+  `code-oss` — i.e. which app you run MirthSync in. A short, fixed
+  identifier; never anything user-specific.
 
 ## What we will never collect
 

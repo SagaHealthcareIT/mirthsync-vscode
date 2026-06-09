@@ -206,9 +206,11 @@ Alternatively, download from [GitHub releases](https://github.com/SagaHealthcare
 
 This extension sends a small amount of anonymous usage data — command
 IDs and durations, success/failure outcomes, numeric error codes,
-non-default-setting booleans, and VS Code's standard environment
-identifiers. We **never** send channel/template/script content, server
-URLs, usernames, credentials, file paths, or subprocess output.
+non-default-setting booleans, the distribution channel and editor the
+build runs in (e.g. `marketplace`/`openvsx`, `vscode`/`cursor`), and VS
+Code's standard environment identifiers. We **never** send
+channel/template/script content, server URLs, usernames, credentials,
+file paths, or subprocess output.
 
 **Opt out** with either:
 

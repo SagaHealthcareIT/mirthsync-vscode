@@ -7,6 +7,37 @@ Versions with an odd minor number (e.g. `0.1.x`) are published to the Marketplac
 
 ## [Unreleased]
 
+## [0.4.4] - 2026-06-09
+
+Stable patch. Makes anonymous usage telemetry actually work in published
+builds — it was silently disabled in all prior releases — and adds
+distribution-channel and host-editor attribution. Also trims what ships
+in the package.
+
+### Fixed
+
+- **Telemetry delivery from published builds.** Production minification
+  was mangling internal property names the bundled telemetry SDK relies
+  on, which silently dropped every event before it left the process; and
+  the Azure connection string was not being baked into the packaged
+  build. Both are corrected, so opted-in anonymous usage telemetry now
+  transmits from Marketplace and Open VSX installs. Telemetry still only
+  runs when both VS Code's telemetry and the extension's own setting are
+  enabled — see [TELEMETRY.md](TELEMETRY.md).
+
+### Added
+
+- **Channel and editor attribution.** Each telemetry event now records
+  the distribution channel it was installed from (`marketplace` /
+  `openvsx`) and the host editor (`vscode` / `cursor` / `vscodium` / …),
+  so usage can be understood per registry and per application.
+
+### Changed
+
+- **Smaller, cleaner package.** The published `.vsix` no longer includes
+  internal infrastructure or CI files; it ships only the runtime bundle
+  and the assets the extension actually needs.
+
 ## [0.4.3] - 2026-06-08
 
 Stable patch. Documentation only — no code or behavior changes.
