@@ -7,6 +7,34 @@ Versions with an odd minor number (e.g. `0.1.x`) are published to the Marketplac
 
 ## [Unreleased]
 
+## [0.4.5] - 2026-06-12
+
+Stable patch. Updates the extension for mirthsync 3.6.0, fixes argument
+quoting when the bundled CLIs are spawned, and adds a heads-up when the
+installed mirthsync is older than the version this release expects.
+
+### Added
+
+- **mirthsync version detection and outdated notice.** The extension now
+  reads the installed mirthsync version via `mirthsync --version` and shows
+  a non-blocking notification — with *Update* and *Release Notes* actions —
+  when it is older than the expected 3.6.0.
+
+### Fixed
+
+- **Argument quoting for spawned CLIs.** Arguments containing spaces or
+  shell metacharacters — passwords, tokens, server URLs, channel names, the
+  git email, and file paths — are now quoted when mirthsync and mirth-cli
+  are invoked through a shell, preventing word-splitting that could break
+  commands (most visibly on Windows).
+
+### Changed
+
+- **Bundled mirthsync pinned to 3.6.0.** The Local Mirth Docker tools image
+  and the expected-version check now target mirthsync 3.6.0, which adds the
+  `--version` flag and fixes Windows `--restrict-to-path` handling of spaces
+  and forward slashes along with the `--delete-orphaned` capture bug.
+
 ## [0.4.4] - 2026-06-09
 
 Stable patch. Makes anonymous usage telemetry actually work in published
