@@ -17,15 +17,29 @@ small.
 - Which commands you run (the command ID — e.g. `mirthsync.pull` — and
   how long it took to complete).
 - High-level outcomes of MirthSync pull/push and git operations:
-  success or failure, duration. **Never** the channel, template, or
-  script names being operated on.
+  success or failure, duration, and which runtime ran the command —
+  the mirthsync installed on your machine (`host`) or the one in the
+  Local Mirth tools container (`container`). **Never** the channel,
+  template, or script names being operated on.
+- Whether the extension found a mirthsync CLI installed on your
+  machine — a single boolean, once per session. Never the path where
+  it was (or was not) found. This tells us how many people rely on the
+  containerised CLI, which decides whether we build a container
+  runtime for remote servers.
 - Connection counts (bucketed: 1, 2-3, 4-10, 10+) and whether each
   connection points at localhost vs. a remote host. Never the URL.
 - Local Mirth lifecycle events (init, start, stop, reset, remove,
-  status) and a boolean for whether Docker is available.
+  status) and whether Docker is available — a boolean, how long the
+  check took, and on failure one of four fixed reason codes
+  (`not-found`, `daemon`, `timeout`, `compose`). Never the probe's
+  output or error text.
 - Error codes from our internal error classification (numeric codes
   only, e.g. `1001`, `4004`, mapped to categories like `Connection`,
-  `API`).
+  `API`). For certificate errors only, one extra boolean: whether the
+  connection was set to Development SSL mode. A certificate error on a
+  Development connection means the extension is not applying that
+  setting, and without the boolean that bug is indistinguishable from
+  the ordinary "this server uses a self-signed certificate" case.
 - Which non-default settings you have enabled — as booleans. For path
   / URL / image-tag settings, only the boolean "has the user
   overridden the default?" is sent, never the value.
@@ -39,6 +53,17 @@ small.
 - The host editor's URI scheme — e.g. `vscode`, `cursor`, `vscodium`,
   `code-oss` — i.e. which app you run MirthSync in. A short, fixed
   identifier; never anything user-specific.
+- Whether the one OpenShare offer was shown, which surface showed it
+  (the post-use notification, or the "can't reach this server?" prompt
+  after a connection failure), and which button you pressed —
+  including *Don't show again*. Whether you were a fresh install or an
+  upgrade. Never anything about the connection that failed.
+- Whether an OpenShare sign-in or account creation completed, how many
+  servers your account can reach (bucketed: 0, 1, 2-3, 4-10, 10+),
+  whether a tunnel was established and which transport path it took,
+  and whether a pull/push ran over a tunnel. **Never** your OpenShare
+  account, email, organisation, server names or ids, or the console
+  address.
 
 ## What we will never collect
 

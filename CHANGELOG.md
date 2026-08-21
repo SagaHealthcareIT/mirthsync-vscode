@@ -7,6 +7,154 @@ Versions with an odd minor number (e.g. `0.1.x`) are published to the Marketplac
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-08-20
+
+A stable release rather than the usual pre-release first: nobody
+meaningfully consumes the pre-release channel, and the fix for
+[#81](https://github.com/SagaHealthcareIT/mirthsync/issues/81) is needed
+by people on stable today.
+
+The OpenShare features go live in this build. `api.openshare.health`
+now serves the client configuration the extension bootstraps from, so
+sign-in and tunnels work against production for the first time.
+
+### Added
+
+- **A Get Started page, which opens itself once.** It covers the whole
+  arc: add a connection, pull and push channels, reach a remote engine
+  with OpenShare, and register an engine in the OpenShare Console. It
+  opens on its own the first time you run this version, whether you
+  installed fresh or updated into it, and never again after that. If you
+  have turned off VS Code's
+  `workbench.welcomePage.walkthroughs.openOnInstall`, it stays shut.
+  Finished steps check themselves off (on a sync that actually succeeded,
+  not on one you started), and the OpenShare half appears only when
+  OpenShare is reachable, changing as you sign in and register a server.
+  Reach it any time with **MirthSync: Get Started**.
+- **An illustrated Get Started walkthrough** is also contributed, so
+  MirthSync appears on VS Code's own Welcome page. Note that VS Code
+  hides walkthrough artwork when the editor is 950px or narrower, which a
+  split editor usually is; the Get Started page above is laid out to work
+  at any width, which is why it is the one that opens.
+- **A cloud button in the Mirth Connections view title** for **List
+  OpenShare Servers**, which until now was reachable only from the command
+  palette.
+- **Create an OpenShare account without leaving VS Code.** The new
+  **MirthSync: Create an OpenShare Account** command runs the same sign-in
+  flow against the identity provider's registration form, so you register,
+  verify your email, and land back in VS Code signed in.
+- **MirthSync: Register a Server in the OpenShare Console**, which opens
+  the console's Servers page. Offered automatically when a listing comes
+  back empty, alongside the walkthrough step explaining the sequence.
+- **One optional notification about OpenShare**, and only one: it appears
+  after you have actually used the extension (a completed pull, push, or a
+  created connection), never on a bare start-up, and it can be silenced
+  permanently from the notification itself. If a connection fails in the
+  specific way a tunnel fixes (refused, timed out, or DNS failure against a
+  remote host), that offer arrives there instead. The two share a single
+  budget, so you see at most one of them, once. Neither appears if
+  OpenShare cannot be reached, or if you are already signed in. Set
+  `mirthsync.openshare.promotions` to `false` to suppress the notification
+  and the welcome-view block entirely; the OpenShare commands and the
+  walkthrough stay available either way.
+
+### Fixed
+
+- **Signing up no longer runs out of time while you are still signing
+  up.** MirthSync waits for your browser to come back after sign-in, and
+  the wait was five minutes for everyone. Creating an account takes
+  longer than that more often than not, between one-time codes, email
+  verification, and the terms, and it failed right at the end after all
+  the work was done. Registration now gets twenty minutes and ordinary
+  sign-in ten. If it does run out, nothing is lost: run the command
+  again.
+
+- **The Get Started page now actually opens after an upgrade.** It is
+  meant to open once when you first run a new version, but the
+  extension only started up at all when your workspace already looked
+  like a Mirth project or you clicked the Mirth Connections view, so
+  for most people nothing happened. MirthSync now starts with the
+  editor. Whether OpenShare is reachable is answered from a local cache
+  that lasts a week, so in normal use this costs one small request a
+  week and nothing at all in between; if OpenShare cannot be reached,
+  MirthSync waits a day before trying again rather than retrying every
+  time you open a window.
+
+- **Development connections now actually accept self-signed
+  certificates.** Setting a connection's SSL mode to Development had no
+  effect on the extension's own requests (Connect, Test Connection,
+  refreshing the tree) to any server that was not on your own machine:
+  they kept failing with `[2001] unable to verify the first
+  certificate`. Pull and push were unaffected, because those run the
+  mirthsync CLI, which got the setting correctly. VS Code replaces the
+  certificate settings we attach to a connection whenever its
+  `http.proxySupport` setting is left at its default, which it is for
+  almost everyone, and whether or not you use a proxy at all. Local
+  connections are exempt from that, which is why Local Mirth always
+  worked and why this went unnoticed for so long. The settings are now
+  applied in a way VS Code preserves. Proxies still work, and Production
+  connections still refuse bad certificates. If you worked around this
+  with `"http.proxySupport": "off"`, you no longer need it and can
+  remove it. (SagaHealthcareIT/mirthsync#81)
+- **A certificate error on a Development connection no longer repeats
+  advice you already followed.** It used to tell you to switch the
+  connection to Development when it was already set to Development. It
+  now says the certificate was rejected anyway and points at the likely
+  causes.
+
+- **A brand-new OpenShare account no longer looks like a broken sign-in.**
+  Until the terms are accepted in the console, the API answers 403 to a
+  perfectly valid session, and the extension reported that as "not
+  authorized, sign out and back in" — advice that cannot possibly clear it.
+  It now says what is actually needed and offers to open the console.
+
+- **Docker detection now tells you what is actually wrong.** The
+  availability check previously collapsed every failure into one "Docker is
+  not available" message. It now distinguishes the CLI missing from VS
+  Code's PATH (with a hint about launching VS Code from a terminal — on
+  macOS, Docker Desktop installs the CLI to `~/.docker/bin`, which
+  Finder-launched apps don't see), a daemon that is installed but not
+  responding, a probe that timed out (new 10-second cap; previously a
+  wedged daemon could hang the command indefinitely), and a missing
+  Compose v2 plugin. The error notification gains a **Retry** button, since
+  the common recovery is simply "start Docker Desktop and try again."
+- **Removing Local Mirth no longer claims success when Docker cleanup was
+  skipped.** When Docker is unavailable (or `docker compose down` fails),
+  the final message now says the containers, volumes, and tools image may
+  remain and gives the `docker compose -p mirthsync-local down -v --rmi
+  local` command to finish the job once Docker is back.
+
+### Changed
+
+- The anonymous `localMirth.dockerAvailability` telemetry event now
+  includes the check duration and, on failure, which of the four fixed
+  reasons applied (`not-found`, `daemon`, `timeout`, `compose`) — never
+  the probe's output. See TELEMETRY.md.
+- Two anonymous signals now record **which mirthsync ran your sync**: the
+  pull / push / git events carry `runtime` (`host` for the CLI installed
+  on your machine, `container` for the one in the Local Mirth tools
+  service), and a new once-per-session `mirthsync.cliDetection` event
+  carries a single `detected` boolean — whether the extension found a
+  host-installed CLI. Neither sends a path. This decides whether we build
+  a containerised CLI runtime for remote servers, which today is not
+  possible: the container route only reaches the bundled Local Mirth.
+  See TELEMETRY.md.
+
+### Removed
+
+- **Scaffolded `.devcontainer/devcontainer.json`** from the Local Mirth
+  template. When the root `.devcontainer/` stack was removed, this one was
+  kept as "a real feature for Codespaces / Remote-SSH users of Local Mirth"
+  — that reasoning was half wrong, and telemetry says the audience is one
+  machine. Under Remote-SSH the extension host already runs on the remote
+  with its own Docker, so those users never needed this file. Codespaces
+  (or a local "Reopen in Container") is the case it existed for, and there
+  it lands the extension host inside the `tools` container, where mirthsync
+  invocation spawns `docker compose exec` against a container that has no
+  Docker CLI and no socket — nothing works. The one session that ever used
+  it failed end to end. Workspaces that already scaffolded the file are
+  left untouched; it is inert unless deliberately opened in a container.
+
 ## [0.4.5] - 2026-06-12
 
 Stable patch. Updates the extension for mirthsync 3.6.0, fixes argument

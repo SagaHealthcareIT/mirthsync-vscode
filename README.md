@@ -17,6 +17,7 @@ Mirth Connect and Open Integration Engine development in VS Code — channel syn
 - **File Explorer Integration** - Right-click on Channels/CodeTemplates folders to pull/push directly
 - **Tree Views** - Browse channels and code templates hierarchically with context menu actions
 - **Local Mirth** - One-command Docker Compose stack with Open Integration Engine + Postgres, for testing this workspace against a throwaway local Mirth
+- **OpenShare** - Easy access to your engine, wherever it lives: push and pull channels to a Mirth server behind a firewall or NAT, with no VPN and no inbound ports. Entirely optional, and free for your own server.
 
 ## Quick Start
 
@@ -86,6 +87,19 @@ Mirth Connect and Open Integration Engine development in VS Code — channel syn
 | `MirthSync: Show Local Mirth Logs` | Tail Mirth container logs into the MirthSync output channel |
 | `MirthSync: Show Local Mirth Info` | URL, credentials, files location, launcher links — with copy actions |
 
+### OpenShare
+
+| Command | Description |
+|---------|-------------|
+| `MirthSync: Get Started` | Open the Get Started page. It also opens itself once after a fresh install or an update. |
+| `MirthSync: Sign In to OpenShare` | Sign in with an existing OpenShare account |
+| `MirthSync: Create an OpenShare Account` | Register a new account without leaving VS Code |
+| `MirthSync: List OpenShare Servers` | Pick a server, bring up the tunnel, and create its connection profile |
+| `MirthSync: Register a Server in the OpenShare Console` | Open the console page where servers are registered |
+| `MirthSync: Open in OpenShare Console` | Open the selected connection's engine in the console |
+| `MirthSync: Disconnect OpenShare Tunnel` | Tear down an active tunnel |
+| `MirthSync: Sign Out of OpenShare` | Remove the stored OpenShare session from this machine |
+
 ## Settings
 
 | Setting | Type | Default | Description |
@@ -107,6 +121,9 @@ Mirth Connect and Open Integration Engine development in VS Code — channel syn
 | `mirthsync.localMirth.mirthImageTag` | string | `"4.5.2-ubuntu-jre"` | Image tag for the Local Mirth server (`sagait/engine` — Saga-packaged Open Integration Engine). |
 | `mirthsync.localMirth.mirthsyncVersion` | string | `"3.6.0"` | mirthsync release version baked into the Local Mirth tools image. |
 | `mirthsync.localMirth.additionalPorts` | array | `[]` | Additional ports to forward from the Mirth container to localhost (e.g., MLLP/HTTP listener ports). The extension writes these to an auto-managed `docker-compose.override.yml` on Start. |
+| `mirthsync.openshare.promotions` | boolean | `true` | Let MirthSync tell you about OpenShare. At most one notification for the life of the install, plus a block in the empty Mirth Connections view. Turning it off hides both; the OpenShare commands stay available. |
+| `mirthsync.openshare.apiUrl` | string | `""` | Override the OpenShare API base URL (e.g. `https://api.openshare.dev`). Leave empty to use production. Requires a trusted workspace. |
+| `mirthsync.openshare.consoleUrl` | string | `""` | Override the OpenShare Console address used by **Open in OpenShare Console**. An origin only, e.g. `https://console.openshare.health`. Leave empty to use the address your deployment publishes. |
 
 ## Tree Views
 
@@ -175,12 +192,53 @@ Default credentials are `admin` / `admin`; the Administrator will prompt you to 
 
 > Prefer a standalone engine outside VS Code? Saga's [five-minute Docker quickstart](https://saga-it.com/blog/mirth-connect-quickstart) walks through running Mirth/OIE locally.
 
+## Easy access to your engine, wherever it lives
+
+Not every Mirth engine is reachable from your laptop. Plenty of them sit
+behind a firewall, on a customer's network, or on the far side of a NAT, and
+the usual answer is a VPN, a jump box, or an inbound port nobody wants to
+open.
+
+[OpenShare](https://openshare.health) carries Mirth Connect's administration
+API over an end-to-end encrypted tunnel, so you can push and pull channels to
+an engine behind a firewall or NAT. No VPN, no inbound ports. It is entirely
+optional, and nothing else in this extension depends on it.
+
+From VS Code it looks like any other connection. Pick a server and MirthSync
+brings up the tunnel, asks once for that engine's Mirth credentials, and
+creates an ordinary connection profile. Push, pull, the channel tree, and the
+code template tree then behave exactly as they do against a server on your own
+network.
+
+### Getting set up
+
+1. Run **MirthSync: Get Started**, or click the cloud icon in
+   the Mirth Connections view title bar.
+2. Sign in, or create an account, without leaving VS Code.
+3. Register your engine in the OpenShare Console and install the Gateway
+   plugin. The installer dialog defaults to "Plugin only", so switch it to
+   "Engine installer" if you do not have an engine running yet. An existing
+   engine needs a restart afterwards, because the plugin is read at start.
+   Wait for the server to read **Registered**.
+4. Run **MirthSync: List OpenShare Servers** and pick it.
+
+Console, monitoring, and gateway access to your own server are free forever,
+and read and write access is selectable on every tier. Only the cross
+organization network is paid.
+
+### What the extension does not do
+
+It never creates or configures OpenShare connections. Provisioning, access
+levels, and who is allowed to reach which server are decided in the OpenShare
+Console; the extension only uses what is already there.
+
 ## Requirements
 
 - VS Code 1.85.0 or higher
 - [mirthsync](https://github.com/SagaHealthcareIT/mirthsync) CLI tool (for sync operations against non-local Mirth servers)
 - Open-source Mirth Connect (4.5.2, the last open-source release), [Open Integration Engine (OIE)](https://github.com/OpenIntegrationEngine/engine), or BridgeLink
 - Docker (only required for the Local Mirth feature)
+- An [OpenShare](https://openshare.health) account and the Gateway plugin on the engine, only if you want to reach a server without setting up a VPN or an inbound port
 
 ### Compatibility
 
@@ -208,9 +266,13 @@ This extension sends a small amount of anonymous usage data — command
 IDs and durations, success/failure outcomes, numeric error codes,
 non-default-setting booleans, the distribution channel and editor the
 build runs in (e.g. `marketplace`/`openvsx`, `vscode`/`cursor`), and VS
-Code's standard environment identifiers. We **never** send
-channel/template/script content, server URLs, usernames, credentials,
-file paths, or subprocess output.
+Code's standard environment identifiers. If you use OpenShare, it also
+records whether the one offer was shown and which button you pressed,
+whether a sign-in or account creation completed, a bucketed count of how
+many servers your account can reach, and whether a tunnel came up. We
+**never** send channel/template/script content, server URLs, usernames,
+credentials, file paths, subprocess output, or anything identifying your
+OpenShare account, organization, or servers.
 
 **Opt out** with either:
 
