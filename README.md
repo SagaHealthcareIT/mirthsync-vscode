@@ -50,6 +50,7 @@ Mirth Connect and Open Integration Engine development in VS Code — channel syn
 | `MirthSync: Toggle ConfigurationMap Inclusion` | Toggle whether to include ConfigurationMap.xml |
 | `MirthSync: Toggle Force Sync` | Toggle force overwrite on conflicts |
 | `MirthSync: Toggle Deploy After Push` | Toggle automatic deployment after push |
+| `MirthSync: Select Deploy Strategy` | Choose how channels are deployed after a push: all, changed only, or changed and new (the last two need mirthsync 3.7.0+) |
 
 ### Tree View Context Menu Commands
 
@@ -78,7 +79,7 @@ Mirth Connect and Open Integration Engine development in VS Code — channel syn
 
 | Command | Description |
 |---------|-------------|
-| `MirthSync: Initialize Local Mirth` | Scaffold `.mirthsync/local/` (compose stack + tools container) into the workspace |
+| `MirthSync: Initialize Local Mirth` | Scaffold `.mirthsync/local/` (compose stack + tools container) into the workspace and pull the engine image for the configured tag |
 | `MirthSync: Start Local Mirth` | Build the tools image and start Mirth + Postgres + tools containers (auto-falls back to an alternate host port if 8443 is busy) |
 | `MirthSync: Stop Local Mirth` | Stop the containers without deleting state |
 | `MirthSync: Reset Local Mirth (Delete State)` | Stop the stack and wipe its Postgres + appdata volumes |
@@ -117,9 +118,10 @@ Mirth Connect and Open Integration Engine development in VS Code — channel syn
 | `mirthsync.promptForDeleteOrphaned` | boolean | `true` | When `deleteOrphaned` is enabled, show a confirmation prompt at the start of each `Pull All`. Disable for unattended automation. |
 | `mirthsync.includeConfigurationMap` | boolean | `false` | Include the Configuration Map when pulling or pushing. |
 | `mirthsync.deployAfterPush` | boolean | `false` | Deploy channels immediately after pushing. |
+| `mirthsync.deployStrategy` | string | `"all"` | How channels are deployed after a push when `deployAfterPush` is on: `all` (`--deploy`), `changed` (`--deploy-changed`), or `changed-and-new` (`--deploy-changed --deploy-new`). The selective strategies need mirthsync 3.7.0+ and fall back to `all` on an older CLI. |
 | `mirthsync.skipDisabled` | boolean | `false` | Skip disabled channels when pushing. |
 | `mirthsync.localMirth.mirthImageTag` | string | `"4.6.0-ubuntu-jre"` | Image tag for the Local Mirth server (`sagait/engine` — Saga-packaged Open Integration Engine). |
-| `mirthsync.localMirth.mirthsyncVersion` | string | `"3.6.0"` | mirthsync release version baked into the Local Mirth tools image. |
+| `mirthsync.localMirth.mirthsyncVersion` | string | `"3.7.0"` | mirthsync release version baked into the Local Mirth tools image. |
 | `mirthsync.localMirth.additionalPorts` | array | `[]` | Additional ports to forward from the Mirth container to localhost (e.g., MLLP/HTTP listener ports). The extension writes these to an auto-managed `docker-compose.override.yml` on Start. |
 | `mirthsync.openshare.promotions` | boolean | `true` | Let MirthSync tell you about OpenShare. At most one notification for the life of the install, plus a block in the empty Mirth Connections view. Turning it off hides both; the OpenShare commands stay available. |
 | `mirthsync.openshare.apiUrl` | string | `""` | Override the OpenShare API base URL (e.g. `https://api.openshare.dev`). Leave empty to use production. Requires a trusted workspace. |
@@ -171,7 +173,7 @@ The status bar shows:
 
 ## Local Mirth
 
-For testing this workspace against a throwaway local Mirth without installing anything on the host beyond Docker, run **`MirthSync: Initialize Local Mirth`**. It scaffolds `.mirthsync/local/` with a compose stack:
+For testing this workspace against a throwaway local Mirth without installing anything on the host beyond Docker, run **`MirthSync: Initialize Local Mirth`**. It scaffolds `.mirthsync/local/` with a compose stack and pulls the engine image (Docker only re-downloads a tag it does not already have, so this is what picks up a rebuilt tag):
 
 - `mirth` — Saga-packaged Open Integration Engine (`sagait/engine`, OIE with Saga plugins preinstalled), exposed on `127.0.0.1:8443` (or an auto-chosen fallback if 8443 is busy)
 - `postgres` — Mirth's backing database, on a named volume

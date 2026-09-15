@@ -19,7 +19,9 @@ small.
 - High-level outcomes of MirthSync pull/push and git operations:
   success or failure, duration, and which runtime ran the command —
   the mirthsync installed on your machine (`host`) or the one in the
-  Local Mirth tools container (`container`). **Never** the channel,
+  Local Mirth tools container (`container`); for pushes, which deploy
+  strategy was used (`none`, `all`, `changed`, or `changed-and-new`), and
+  for pulls whether orphan deletion was on. **Never** the channel,
   template, or script names being operated on.
 - Whether the extension found a mirthsync CLI installed on your
   machine — a single boolean, once per session. Never the path where

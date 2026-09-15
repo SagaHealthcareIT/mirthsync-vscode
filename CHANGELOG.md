@@ -7,6 +7,47 @@ Versions with an odd minor number (e.g. `0.1.x`) are published to the Marketplac
 
 ## [Unreleased]
 
+## [0.6.2] - 2026-09-15
+
+Stable release for mirthsync 3.7.0. Selective deployment after push, and
+Initialize Local Mirth now pulls the engine image so a cached, stale tag
+can no longer start a build whose bundled plugins the engine rejects.
+
+### Added
+
+- **Selective deployment after push** (mirthsync 3.7.0). New setting
+  `mirthsync.deployStrategy` chooses how `deployAfterPush` deploys: `all`
+  (every pushed channel, `--deploy`, the previous behaviour and still the
+  default), `changed` (only channels the server reports as changed after
+  the push, `--deploy-changed`), or `changed-and-new` (changed channels
+  plus pushed channels that are not currently deployed,
+  `--deploy-changed --deploy-new`). **MirthSync: Select Deploy Strategy**
+  offers the same choice as a quick pick. The flags are only passed when
+  the mirthsync that will run is 3.7.0 or newer: the detected host CLI for
+  normal connections, the `mirthsync.localMirth.mirthsyncVersion` tools
+  image for Local Mirth. On an older CLI the push falls back to `--deploy`
+  and says so once.
+
+### Changed
+
+- **Bundled mirthsync pinned to 3.7.0.** The Local Mirth tools image, the
+  expected-version check, and the outdated-CLI prompt now target
+  mirthsync 3.7.0. Existing Local Mirth workspaces rebuild the tools image
+  on the next Start; until then a tools container that is still running
+  from before the update has 3.6.0, so run **Start Local Mirth** once
+  before choosing a selective deploy strategy against it.
+
+- **Initialize Local Mirth now pulls the engine image.** `docker compose up`
+  never re-downloads a tag that already exists locally, so a machine that had
+  cached `sagait/engine:<tag>` before the tag was rebuilt kept starting the
+  stale build, with older bundled plugins, and the only sign was an
+  "Extension ... is not compatible" line in the engine log. Initialize now
+  runs `docker compose pull mirth` for the configured
+  `mirthsync.localMirth.mirthImageTag` right after scaffolding. The pull is
+  cancellable; a failed or cancelled pull is reported and Start proceeds with
+  whatever is cached. Docker being unavailable at Initialize is not an error,
+  as before.
+
 ## [0.6.1] - 2026-09-15
 
 Stable patch. Moves the default Local Mirth image from
