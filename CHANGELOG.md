@@ -7,6 +7,49 @@ Versions with an odd minor number (e.g. `0.1.x`) are published to the Marketplac
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-09-15
+
+Stable patch. Moves the default Local Mirth image from
+`sagait/engine:4.5.2-ubuntu-jre` to `sagait/engine:4.6.0-ubuntu-jre`,
+the current Open Integration Engine release. The `4.5.2` tags have been
+frozen since May and no longer receive plugin or base-image updates;
+`4.6.0-ubuntu-jre` was rebuilt on 2026-09-01 with mirthsync-plugin
+0.0.4, simple-channel-history 2.8.0, and tls-manager 1.0.7.
+
+### Changed
+
+- **Default `mirthsync.localMirth.mirthImageTag`** is now
+  `4.6.0-ubuntu-jre` (was `4.5.2-ubuntu-jre`). The scaffolded
+  `compose.yml` template, settings-snapshot telemetry default, and
+  scaffold README are updated accordingly.
+- The scaffold README no longer claims `admin-console` is bundled in
+  `sagait/engine`; the image ships mirthsync, simple-channel-history,
+  and tls-manager. The OpenShare gateway plugin is installed separately
+  through the `mirth-custom-extensions` volume.
+
+### Migration impact (existing Local Mirth workspaces)
+
+On the first **MirthSync: Start Local Mirth** after upgrading, users
+who never customized `mirthsync.localMirth.mirthImageTag` will see:
+
+1. A ~370 MB image pull (`sagait/engine:4.6.0-ubuntu-jre`).
+2. The `mirthsync-local-mirth` container is recreated against the
+   new image.
+3. **Data is preserved.** Mirth appdata, custom extensions, and
+   Postgres data live in named volumes (`mirth-appdata`,
+   `mirth-custom-extensions`, `postgres-data`) and are not touched.
+   4.6.0 makes no schema changes; channels, code templates, and DB
+   content carry over as they are.
+4. **Going back is not supported.** On first start 4.6.0 stamps the
+   database with its own schema version, which a 4.5.2 engine does not
+   recognise and will not start against. To stay on 4.5.2, set
+   `mirthsync.localMirth.mirthImageTag` to `4.5.2-ubuntu-jre` *before*
+   the first start on this version, or run **MirthSync: Reset Local
+   Mirth** afterwards to wipe the volumes and start fresh.
+
+Users who explicitly pinned `mirthsync.localMirth.mirthImageTag`
+keep their pinned value with no change.
+
 ## [0.6.0] - 2026-08-20
 
 A stable release rather than the usual pre-release first: nobody
