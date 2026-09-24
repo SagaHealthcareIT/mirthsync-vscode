@@ -7,6 +7,20 @@ Versions with an odd minor number (e.g. `0.1.x`) are published to the Marketplac
 
 ## [Unreleased]
 
+## [0.6.3] - 2026-09-24
+
+Stable patch release. Push now offers to save unsaved files first.
+
+### Added
+
+- **Save before push** ([mirthsync#94](https://github.com/SagaHealthcareIT/mirthsync/issues/94)).
+  mirthsync pushes files from disk, so unsaved edits were silently left
+  out. Push now lists unsaved files in the push's scope (the whole
+  workspace, or the selected channel, group, or library) and offers
+  **Save All & Push**, **Push Without Saving**, or cancel. New setting
+  `mirthsync.saveBeforePush`: `prompt` (default), `always`, or `never`.
+  If a save fails, the push is cancelled.
+
 ## [0.6.2] - 2026-09-15
 
 Stable release for mirthsync 3.7.0. Selective deployment after push, and
