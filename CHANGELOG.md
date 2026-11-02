@@ -5,7 +5,94 @@ All notable changes to the MirthSync VS Code extension are documented in this fi
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versions with an odd minor number (e.g. `0.1.x`) are published to the Marketplace as pre-releases; even minor versions are stable.
 
-## [Unreleased]
+## [0.6.4] - 2026-11-02
+
+Stable patch release. Local Mirth moves to Open Integration Engine 4.7.0 and mirthsync 3.8.1.
+
+### Changed
+
+- **Default `mirthsync.localMirth.mirthImageTag`** is now
+  `4.7.0-ubuntu-jre` (was `4.6.0-ubuntu-jre`). `sagait/engine` was
+  first published on OIE 4.7.0 on 2026-10-30, bundling mirthsync-plugin
+  0.0.6, tls-manager 1.0.9 and simple-channel-history 2.9.0. The scaffolded
+  `compose.yml`, its README and the settings-snapshot telemetry default
+  are updated to match.
+- **A new *Local Mirth* connection gets a generated password.** OIE 4.7
+  has no built-in `admin` / `admin`: when it creates its database it sets
+  the admin password from `_MP_SERVER_INITIALADMINPASSWORD`, or generates
+  one and prints it once to the engine log. When the extension creates the
+  *Local Mirth* connection it now saves a random 24-character password
+  (letters and digits) instead of `admin`, and **Start Local Mirth** passes
+  the connection's saved password to the engine in that variable. The
+  managed `docker-compose.override.yml`, now written on every Start, names
+  the variable without a value, so the password comes from Start's
+  environment and is not written to any file in the workspace. The Start
+  message and **Show Local Mirth Info** no longer say `admin` / `admin`;
+  both copy the saved password.
+- **Bundled mirthsync pinned to 3.8.1** (was 3.7.0). The Local Mirth tools
+  image (`mirthsync.localMirth.mirthsyncVersion`), the expected-version
+  check and the outdated-CLI prompt now target mirthsync 3.8.1, so a host
+  CLI older than 3.8.1 now gets the **Update via npm** prompt. Selective
+  deployment still needs only 3.7.0. From the mirthsync release notes:
+  - 3.8.0 sorts the collections Mirth stores in no fixed order (code
+    template context types, channel dependency and tag IDs, the
+    configuration map and others) when it pulls, so pulling unchanged code
+    no longer reorders them in version control. Expect a one-time commit
+    that only reorders these elements the first time you pull over existing
+    files with `mirthsync.forceSync` on.
+  - 3.8.1 makes orphan detection on pull linear instead of quadratic. On a
+    server with about 300 channels, a pull dropped from about 9 minutes to
+    about 20 seconds. The old check also missed some stale `.js` files, so
+    **Pull All** with `mirthsync.deleteOrphaned` on may now report, and
+    delete, script files it skipped before.
+
+### Migration impact (existing Local Mirth workspaces)
+
+**Initialize Local Mirth** copies the template into `.mirthsync/local/`,
+and later extension updates don't rewrite those files. **Start Local
+Mirth**, though, passes the `mirthImageTag` and `mirthsyncVersion` settings
+to `docker compose`, and they take priority over the versions in the
+workspace's own `compose.yml` and over any `MIRTH_IMAGE_TAG` or
+`MIRTHSYNC_VERSION` line in `.mirthsync/local/.env`. So on the first Start
+after upgrading, users who never customized those settings will see:
+
+1. A pull of `sagait/engine:4.7.0-ubuntu-jre`, and the
+   `mirthsync-local-mirth` container recreated on it.
+2. The tools image rebuilt with mirthsync 3.8.1.
+3. **A one-way database upgrade.** Channels, code templates and the rest of
+   the database carry over, but 4.7.0 migrates the schema on its first
+   start and a 4.6.0 engine fails to start against it afterwards. To stay
+   on 4.6.0, set `mirthsync.localMirth.mirthImageTag` to
+   `4.6.0-ubuntu-jre` *before* that first Start. If the database has
+   already been upgraded, set the tag to `4.6.0-ubuntu-jre` and then run
+   **MirthSync: Reset Local Mirth** to wipe it and start fresh.
+4. **Your admin password is kept.** The database already has it, so
+   `admin` / `admin`, or whatever you changed it to, still works.
+5. **Nothing to re-initialize.** The *Local Mirth* connection keeps its
+   saved password (usually `admin`), and Start seeds every new database
+   with it: after **Reset Local Mirth** or a manual `docker compose down
+   -v`, on the first Start of a workspace that was initialized but never
+   started, and in a fresh clone of a repository that commits
+   `.mirthsync/local/compose.yml`. The seed goes through the managed
+   `docker-compose.override.yml`, so the workspace's existing `compose.yml`
+   needs no change. If you wrote your own `docker-compose.override.yml`,
+   which the extension never edits, list `_MP_SERVER_INITIALADMINPASSWORD`
+   with no value under `services.mirth.environment`; Start warns while it
+   is missing.
+
+The saved password and the database can still disagree: when you change the
+password in the Administrator, when the *Local Mirth* connection is deleted
+while its database survives (the recreated connection gets a new generated
+password), or when an engine older than 4.7, which ignores the seed and
+always creates `admin` / `admin`, creates the database for a new connection.
+Connecting, pulling or pushing then reports that the server rejected the
+stored credentials and offers **Update Credentials**. If you don't know the
+database's password, **Reset Local Mirth** and Start again: on 4.7 and later
+the new database gets the saved password.
+
+Users who pinned `mirthsync.localMirth.mirthImageTag` or
+`mirthsync.localMirth.mirthsyncVersion` in their VS Code settings keep
+those values.
 
 ## [0.6.3] - 2026-09-24
 
