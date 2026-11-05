@@ -5,6 +5,26 @@ All notable changes to the MirthSync VS Code extension are documented in this fi
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versions with an odd minor number (e.g. `0.1.x`) are published to the Marketplace as pre-releases; even minor versions are stable.
 
+## [0.6.5] - 2026-11-05
+
+Stable patch release with security hardening. Recommended for everyone.
+
+### Security
+
+- **mirthsync and the Mirth CLI are now started directly, not through a command shell.** Names that come from a connected engine (channel, group, code template and library names) are always passed to them as plain text. Update to this release.
+- **Your mirthsync password is no longer on the command line.** The extension passes it in the `MIRTHSYNC_PASSWORD` environment variable, which mirthsync reads. Local Mirth connections are unchanged.
+
+### Changed
+
+- **On Windows with mirthsync older than 3.6.0** (check with `mirthsync --version`), an item whose name contains a character such as `&`, `|`, `%` or `"` is not pulled or pushed. The extension asks you to update mirthsync (`npm install -g @saga-it/mirthsync`) instead.
+- **A custom `.cmd` or `.bat` launcher** set in `mirthsync.mirthsyncPath` still works, but an operation whose values contain `"`, `%` or a line break is refused with a message. The standard npm install and the mirthsync release download are not affected.
+
+### Fixed
+
+- Passwords containing `$`, a backtick or `\` now work for mirthsync pull and push.
+- A mirthsync install path with spaces (for example under `C:\Program Files\nodejs`) no longer breaks detection.
+- The Mirth CLI deploy, undeploy, import and export commands pass channel names and file paths with spaces exactly as typed.
+
 ## [0.6.4] - 2026-11-02
 
 Stable patch release. Local Mirth moves to Open Integration Engine 4.7.0 and mirthsync 3.8.1.
