@@ -121,7 +121,7 @@ Mirth Connect and Open Integration Engine development in VS Code — channel syn
 | `mirthsync.deployStrategy` | string | `"all"` | How channels are deployed after a push when `deployAfterPush` is on: `all` (`--deploy`), `changed` (`--deploy-changed`), or `changed-and-new` (`--deploy-changed --deploy-new`). The selective strategies need mirthsync 3.7.0+ and fall back to `all` on an older CLI. |
 | `mirthsync.skipDisabled` | boolean | `false` | Skip disabled channels when pushing. |
 | `mirthsync.localMirth.mirthImageTag` | string | `"4.7.0-ubuntu-jre"` | Image tag for the Local Mirth server (`sagait/engine` — Saga-packaged Open Integration Engine). |
-| `mirthsync.localMirth.mirthsyncVersion` | string | `"3.8.1"` | mirthsync release version baked into the Local Mirth tools image. |
+| `mirthsync.localMirth.mirthsyncVersion` | string | `"3.9.0"` | mirthsync release version baked into the Local Mirth tools image. |
 | `mirthsync.localMirth.additionalPorts` | array | `[]` | Additional ports to forward from the Mirth container to localhost (e.g., MLLP/HTTP listener ports). The extension writes these to an auto-managed `docker-compose.override.yml` on Start. |
 | `mirthsync.openshare.promotions` | boolean | `true` | Let MirthSync tell you about OpenShare. At most one notification for the life of the install, plus a block in the empty Mirth Connections view. Turning it off hides both; the OpenShare commands stay available. |
 | `mirthsync.openshare.apiUrl` | string | `""` | Override the OpenShare API base URL (e.g. `https://api.openshare.dev`). Leave empty to use production. Requires a trusted workspace. |

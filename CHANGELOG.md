@@ -5,6 +5,24 @@ All notable changes to the MirthSync VS Code extension are documented in this fi
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versions with an odd minor number (e.g. `0.1.x`) are published to the Marketplace as pre-releases; even minor versions are stable.
 
+## [0.6.6] - 2026-11-06
+
+Stable patch release for mirthsync 3.9.0, which gives some files new names. Update the extension when you update mirthsync; it also works with older mirthsync versions.
+
+### Changed
+
+- **mirthsync 3.9.0 is the expected version** (was 3.8.1), and Local Mirth's tools image now installs it. A host mirthsync older than 3.9.0 gets the **Update via npm** prompt; it keeps working, with the file names it writes. Existing Local Mirth workspaces move to 3.9.0 the next time Local Mirth starts, and if any item names change, the notice below appears once before the first push or pull.
+- **Ready for mirthsync 3.9.0.** mirthsync 3.9.0 gives files new names when an item's name has characters Windows doesn't allow in file names (`:` becomes `%3A`, `%` becomes `%25`) or is a Windows device name such as `AUX`. Push and pull from the Channels and Code Templates views now build the item's path the way the mirthsync you run names it, so they work with 3.9.0 and with older versions.
+- **One notice before the first mirthsync 3.9.0 push or pull** in a workspace that has names 3.9.0 writes differently, with the steps from mirthsync's upgrade notes: push any changes made with the older version, then pull everything once with both Force Sync and Delete Orphaned on (`mirthsync pull -f --delete-orphaned`) and commit. A first 3.9.0 pull with Delete Orphaned on but Force Sync off is stopped, because it would delete script files that channels still use.
+- Push and pull messages show the item's own name, not its encoded file name.
+- **The MirthSync output shows which mirthsync each push or pull runs**, and where it comes from (the installed mirthsync or the Local Mirth tools container). It also notes when the installed mirthsync changed version.
+
+### Fixed
+
+- **A push or pull that matched nothing no longer says it succeeded.** With mirthsync 3.9.0 or later, the extension warns that nothing was pushed or pulled.
+- Updating mirthsync while VS Code is open is picked up on the next push or pull, without a reload.
+- Saving before a push now includes the channel's or template's own `.xml` file, not only the scripts in its folder.
+
 ## [0.6.5] - 2026-11-05
 
 Stable patch release with security hardening. Recommended for everyone.
